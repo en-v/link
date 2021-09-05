@@ -60,7 +60,7 @@ func (this *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Conne
 	if core.DEBUG {
 		log.Debug(data)
 	}
-	//TODO
+
 	err = json.Unmarshal(data, requestFromCaller)
 	if err != nil {
 		return nil, errors.Wrap(err, "handshakeFromCaller.Unmarshal")
@@ -79,7 +79,7 @@ func (this *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Conne
 		}
 		err = this.state.ClientsAuthFunc(requestFromCaller.SenderId, token)
 		if err != nil {
-			return nil, errors.New("Acees denied, token is wrong, " + err.Error())
+			return nil, errors.New("Acees denied, the token is wrong, " + err.Error())
 		}
 	}
 
@@ -101,7 +101,7 @@ func (this *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Conne
 	}
 
 	if core.DEBUG {
-		log.Debug("Gate handshake is succefull")
+		log.Debug("Gate's handshake is succefull")
 	}
 
 	return conn, nil
