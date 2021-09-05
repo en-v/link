@@ -3,13 +3,13 @@ package main
 import (
 	"time"
 
-	bblink "github.com/en-v/link"
+	link "github.com/en-v/link"
 	"github.com/en-v/link/test/targets"
 )
 
 func main() {
 
-	bblink.DebugOn()
+	link.DebugOn()
 	targets.TestServer()
 
 	for i := 0; i < targets.CLIENTS; i++ {
