@@ -26,7 +26,7 @@ if err != nil {
 	panic(err)
 }
 
-////////////////////////////////////
+//
 
 func (s *Server) ServerMethod(params *types.Payload) (*types.Payload, error) {
     res := link.Payload()
