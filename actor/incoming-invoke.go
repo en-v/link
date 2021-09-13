@@ -8,13 +8,13 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (this *Actor) InvokeIncomingAction(req *message.MsgV1) (*types.Payload, error) {
-	action, err := this.state.LocalTarget.FindAction(req.Action)
+func (self *Actor) InvokeIncomingAction(req *message.MsgV1) (*types.Payload, error) {
+	action, err := self.state.LocalTarget.FindAction(req.Action)
 	if err != nil {
 		return nil, errors.Wrap(err, "ActOnLocal.FindActionByName")
 	}
 
-	arg := []reflect.Value{this.state.LocalTarget.Value, reflect.ValueOf(req.Payload)}
+	arg := []reflect.Value{self.state.LocalTarget.Value, reflect.ValueOf(req.Payload)}
 	res := action.Func.Call(arg)
 
 	if res[1].Interface() != nil {

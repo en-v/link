@@ -51,31 +51,31 @@ func Request(senderId string, action string, payload *types.Payload) *MsgV1 {
 	}
 }
 
-func (this *MsgV1) ToResponse(receiverId string, payload *types.Payload) *MsgV1 {
+func (self *MsgV1) ToResponse(receiverId string, payload *types.Payload) *MsgV1 {
 	return &MsgV1{
-		Version:   this.Version,
-		MsgId:     this.MsgId,
-		SenderId:  this.SenderId,
+		Version:   self.Version,
+		MsgId:     self.MsgId,
+		SenderId:  self.SenderId,
 		RecvrId:   receiverId,
-		Action:    this.Action,
+		Action:    self.Action,
 		Type:      RESPONSE,
 		Status:    STATUS_OK,
 		Responsed: time.Now(),
-		Requested: this.Requested,
+		Requested: self.Requested,
 		Payload:   payload,
 	}
 }
 
-func (this *MsgV1) ToError(receiverId string, err error) *MsgV1 {
-	response := this.ToResponse(receiverId, nil)
+func (self *MsgV1) ToError(receiverId string, err error) *MsgV1 {
+	response := self.ToResponse(receiverId, nil)
 	response.Status = STATUS_ERR
 	response.Payload = types.Newp()
 	response.Payload.Set(ERROR_PAYLOAD_FIELD, err.Error())
 	return response
 }
 
-func (this *MsgV1) ToJson() string {
-	d, e := json.Marshal(this)
+func (self *MsgV1) ToJson() string {
+	d, e := json.Marshal(self)
 	if e != nil {
 		return e.Error()
 	}

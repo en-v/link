@@ -7,8 +7,8 @@ import (
 	"github.com/en-v/link/connection/waiter"
 )
 
-func (this *Connection) GetWaiter(msgId string) (*waiter.Waiter, error) {
-	for _, w := range this.waiters {
+func (self *Connection) GetWaiter(msgId string) (*waiter.Waiter, error) {
+	for _, w := range self.waiters {
 		if w != nil && w.MsgId == msgId {
 			return w, nil
 		}
@@ -16,21 +16,21 @@ func (this *Connection) GetWaiter(msgId string) (*waiter.Waiter, error) {
 	return nil, errors.New("Waiter not found")
 }
 
-func (this *Connection) SetWaiter(msgId string) error {
-	for i, w := range this.waiters {
+func (self *Connection) SetWaiter(msgId string) error {
+	for i, w := range self.waiters {
 		if w == nil {
-			this.waiters[i] = waiter.New(msgId)
+			self.waiters[i] = waiter.New(msgId)
 			return nil
 		}
 	}
-	return errors.New("Empty slots not found, total " + strconv.Itoa(len(this.waiters)))
+	return errors.New("Empty slots not found, total " + strconv.Itoa(len(self.waiters)))
 }
 
-func (this *Connection) DropWaiter(msgId string) {
-	for i, w := range this.waiters {
+func (self *Connection) DropWaiter(msgId string) {
+	for i, w := range self.waiters {
 		if w != nil && w.MsgId == msgId {
 			w.Drop()
-			this.waiters[i] = nil
+			self.waiters[i] = nil
 			return
 		}
 	}

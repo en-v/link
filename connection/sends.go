@@ -9,21 +9,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (this *Connection) WriteJSON(msg *message.MsgV1) error {
+func (self *Connection) WriteJSON(msg *message.MsgV1) error {
 
-	this.mutex.Lock()
-	err := this.socket.WriteJSON(msg)
-	this.mutex.Unlock()
+	self.mutex.Lock()
+	err := self.socket.WriteJSON(msg)
+	self.mutex.Unlock()
 
 	if err != nil {
-		this.lastact = time.Now()
+		self.lastact = time.Now()
 	}
 	return err
 }
 
-func (this *Connection) SendRequst(req *message.MsgV1) error {
+func (self *Connection) SendRequst(req *message.MsgV1) error {
 
-	if !this.enabled {
+	if !self.enabled {
 		return errors.New("Current connection is disabled)")
 	}
 
@@ -31,7 +31,7 @@ func (this *Connection) SendRequst(req *message.MsgV1) error {
 		return errors.New("Current message is not request)")
 	}
 
-	err := this.WriteJSON(req)
+	err := self.WriteJSON(req)
 	if err != nil {
 		return errors.Wrap(err, "SendRequest.WriteJSON")
 	}
@@ -40,7 +40,7 @@ func (this *Connection) SendRequst(req *message.MsgV1) error {
 		return nil
 	}
 
-	err = this.SetWaiter(req.MsgId)
+	err = self.SetWaiter(req.MsgId)
 	if err != nil {
 		return errors.Wrap(err, "SendRequest.SetResponseWaiter")
 	}
@@ -48,25 +48,25 @@ func (this *Connection) SendRequst(req *message.MsgV1) error {
 	return nil
 }
 
-func (this *Connection) WaitResponse(messageId string) (*message.MsgV1, error) {
+func (self *Connection) WaitResponse(messageId string) (*message.MsgV1, error) {
 
-	waiter, err := this.GetWaiter(messageId)
+	waiter, err := self.GetWaiter(messageId)
 	if err != nil {
 		return nil, errors.Wrap(err, "WaitResponse.WaitResponse")
 	}
 
 	select {
 	case resp := <-waiter.Channel: // waiting for response message for current request
-		this.DropWaiter(waiter.MsgId)
+		self.DropWaiter(waiter.MsgId)
 		return resp, nil
 
 	case <-time.After(core.RESPONSE_WAITING_EXPIRE_INTERVAL): // ... or drop the waiting if time expired
-		this.DropWaiter(waiter.MsgId)
+		self.DropWaiter(waiter.MsgId)
 		return nil, errors.New("Waiting for response time expired")
 	}
 }
 
-func (this *Connection) SendResponse(resp *message.MsgV1) error {
+func (self *Connection) SendResponse(resp *message.MsgV1) error {
 
 	if core.DEBUG {
 		log.Debugw("Send", "Response", resp.ToJson())
@@ -76,7 +76,7 @@ func (this *Connection) SendResponse(resp *message.MsgV1) error {
 		return errors.New("Current message is not response")
 	}
 
-	err := this.WriteJSON(resp)
+	err := self.WriteJSON(resp)
 	if err != nil {
 		return errors.Wrap(err, "SendResponse.WriteJSON")
 	}

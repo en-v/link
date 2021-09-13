@@ -6,7 +6,7 @@ import (
 	"github.com/en-v/link/core"
 )
 
-func (this *Link) tlsFilesExist(certFile string, keyFile string) (bool, error) {
+func (self *Link) tlsFilesExist(certFile string, keyFile string) (bool, error) {
 	if certFile != "" && keyFile != "" {
 
 		if !FilexExist(certFile) || !FilexExist(keyFile) {
@@ -18,14 +18,14 @@ func (this *Link) tlsFilesExist(certFile string, keyFile string) (bool, error) {
 	return false, nil
 }
 
-func (this *Link) verifyLinkAsServer() error {
+func (self *Link) verifyLinkAsServer() error {
 
-	if this.state.Mode == core.CLIENT_MODE {
+	if self.state.Mode == core.CLIENT_MODE {
 		return errors.New("Link is alredy in client mode")
 	}
 
-	for i := range this.state.Connections {
-		if this.state.Connections[i] != nil && this.state.Connections[i].IsActive() {
+	for i := range self.state.Connections {
+		if self.state.Connections[i] != nil && self.state.Connections[i].IsActive() {
 			return errors.New("More than 1 active or not nil connections found")
 		}
 	}
@@ -33,16 +33,16 @@ func (this *Link) verifyLinkAsServer() error {
 	return nil
 }
 
-func (this *Link) verifyLinkAsCaller() error {
-	if this.state.Mode == core.GATE_MODE {
+func (self *Link) verifyLinkAsCaller() error {
+	if self.state.Mode == core.GATE_MODE {
 		return errors.New("Link is alredy in server mode")
 	}
 
-	if len(this.state.Connections) > 1 {
+	if len(self.state.Connections) > 1 {
 		return errors.New("More than 1 active connections found")
 	}
 
-	if len(this.state.Connections) == 1 && this.state.Connections[0] != nil && this.state.Connections[0].IsActive() {
+	if len(self.state.Connections) == 1 && self.state.Connections[0] != nil && self.state.Connections[0].IsActive() {
 		return errors.New("Local active client connections exists")
 	}
 

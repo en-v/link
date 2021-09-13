@@ -44,25 +44,25 @@ func New(m reflect.Method) (*Action, error) {
 	}, nil
 }
 
-func (this *Action) act(target interface{}, param interface{}) (interface{}, error) {
+func (self *Action) act(target interface{}, param interface{}) (interface{}, error) {
 
-	if reflect.TypeOf(target) != this.Type {
+	if reflect.TypeOf(target) != self.Type {
 		return nil, errors.New("Wrong owner data type")
 	}
 
-	if reflect.TypeOf(param) != this.ParamType {
+	if reflect.TypeOf(param) != self.ParamType {
 		return nil, errors.New("Wrong parameter data type")
 	}
 
-	if !this.targetKnown {
-		this.Ins[0] = reflect.ValueOf(target)
-		this.targetKnown = true
+	if !self.targetKnown {
+		self.Ins[0] = reflect.ValueOf(target)
+		self.targetKnown = true
 	}
-	this.Ins[1] = reflect.ValueOf(param)
+	self.Ins[1] = reflect.ValueOf(param)
 
-	res := this.Func.Call(this.Ins)
+	res := self.Func.Call(self.Ins)
 
-	if this.ResultLen == 2 && res[1].Interface() != nil {
+	if self.ResultLen == 2 && res[1].Interface() != nil {
 		return res[0].Interface(), res[1].Interface().(error)
 	}
 	return res[0].Interface(), nil

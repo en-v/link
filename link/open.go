@@ -12,84 +12,84 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (this *Link) Open(gatePort int) error {
-	return this.open("", gatePort, "", "")
+func (self *Link) Open(gatePort int) error {
+	return self.open("", gatePort, "", "")
 }
 
-func (this *Link) OpenLocal(gatePort int) error {
-	return this.open("localhost", gatePort, "", "")
+func (self *Link) OpenLocal(gatePort int) error {
+	return self.open("localhost", gatePort, "", "")
 }
 
-func (this *Link) OpenSecure(gatePort int, certFile string, keyFile string) error {
-	return this.open("", gatePort, certFile, keyFile)
+func (self *Link) OpenSecure(gatePort int, certFile string, keyFile string) error {
+	return self.open("", gatePort, certFile, keyFile)
 }
 
-func (this *Link) open(netif string, gatePort int, certFile string, keyFile string) error {
+func (self *Link) open(netif string, gatePort int, certFile string, keyFile string) error {
 
 	if core.DEBUG {
-		log.Debugw("Link-Gate is prepering...", "Alias", this.state.Alias, "Port", gatePort)
+		log.Debugw("Link-Gate is prepering...", "Alias", self.state.Alias, "Port", gatePort)
 	}
 
 	if gatePort < 1 || gatePort > 65535 {
 		return errors.New("Local TCP port value out of range")
 	}
 
-	err := this.verifyLinkAsServer()
+	err := self.verifyLinkAsServer()
 	if err != nil {
 		return err
 	}
 
 	localAddress := netif + ":" + strconv.Itoa(gatePort)
-	this.state.Net.LocalGatePort = gatePort
+	self.state.Net.LocalGatePort = gatePort
 
-	this.state.SetGateMode()
+	self.state.SetGateMode()
 
-	this.httpsrv = &http.Server{Addr: localAddress}
+	self.httpsrv = &http.Server{Addr: localAddress}
 	handler := http.NewServeMux()
-	handler.HandleFunc("/", this.handleIncomingConnectionFromClients)
-	this.httpsrv.Handler = handler
-	this.upgrader = websocket.Upgrader{
+	handler.HandleFunc("/", self.handleIncomingConnectionFromClients)
+	self.httpsrv.Handler = handler
+	self.upgrader = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			return true
 		},
 	}
 
-	err = this.runHttp(certFile, keyFile)
+	err = self.runHttp(certFile, keyFile)
 	if err != nil {
 		return err
 	}
 
 	if core.DEBUG {
-		log.Debugw("Link-gate is ready", "Alias", this.state.Alias, "Port", gatePort)
+		log.Debugw("Link-gate is ready", "Alias", self.state.Alias, "Port", gatePort)
 	}
 	return nil
 }
 
-func (this *Link) runHttp(certFile string, keyFile string) error {
-	exist, err := this.tlsFilesExist(certFile, keyFile)
+func (self *Link) runHttp(certFile string, keyFile string) error {
+	exist, err := self.tlsFilesExist(certFile, keyFile)
 	if err != nil {
 		return err
 	}
 
 	if exist {
 		go func() {
-			this.state.Net.CertFile = certFile
-			this.state.Net.KeyFile = keyFile
-			err = this.httpsrv.ListenAndServeTLS(this.state.Net.CertFile, this.state.Net.KeyFile)
+			self.state.Net.CertFile = certFile
+			self.state.Net.KeyFile = keyFile
+			err = self.httpsrv.ListenAndServeTLS(self.state.Net.CertFile, self.state.Net.KeyFile)
 		}()
 	} else {
 		go func() {
-			err = this.httpsrv.ListenAndServe()
+			err = self.httpsrv.ListenAndServe()
 		}()
 	}
-	go this.state.DropFallenConnections()
+	go self.state.DropFallenConnections()
 	time.Sleep(time.Second)
 	return nil
 }
 
-func (this *Link) handleIncomingConnectionFromClients(w http.ResponseWriter, r *http.Request) {
+func (self *Link) handleIncomingConnectionFromClients(w http.ResponseWriter, r *http.Request) {
 
-	socket, err := this.upgrader.Upgrade(w, r, nil)
+	socket, err := self.upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		err = errors.Wrap(err, "HandleIncomingConnectionFromClients.UpgradeWS")
 		log.Error(err)
@@ -98,7 +98,7 @@ func (this *Link) handleIncomingConnectionFromClients(w http.ResponseWriter, r *
 		return
 	}
 
-	conn, err := this.handshakeFromCaller(socket)
+	conn, err := self.handshakeFromCaller(socket)
 	if err != nil {
 		err = errors.Wrap(err, "HandleIncomingConnectionFromClients.handshakeFromCaller")
 		log.Error(err)
@@ -117,7 +117,7 @@ func (this *Link) handleIncomingConnectionFromClients(w http.ResponseWriter, r *
 	}
 	conn.IP = d
 
-	err = this.state.SetConnection(conn)
+	err = self.state.SetConnection(conn)
 	if err != nil {
 		err = errors.Wrap(err, "HandleIncomingConnectionFromClients.SetConnection")
 		log.Error(err)
@@ -129,8 +129,8 @@ func (this *Link) handleIncomingConnectionFromClients(w http.ResponseWriter, r *
 	conn.Enable()
 	go conn.Listen(core.GATE_MODE)
 
-	if this.state.ClientsRegFunc != nil {
-		err = this.state.ClientsRegFunc(conn.RemId)
+	if self.state.ClientsRegFunc != nil {
+		err = self.state.ClientsRegFunc(conn.RemId)
 		if err != nil {
 			err = errors.Wrap(err, "Client register extenal method returned error")
 			log.Error(err)

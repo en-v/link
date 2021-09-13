@@ -27,17 +27,17 @@ func NewPut(pointer interface{}) (*Payload, error) {
 	return n, nil
 }
 
-func (this *Payload) Set(field string, data interface{}) {
-	this.items[field] = data
+func (self *Payload) Set(field string, data interface{}) {
+	self.items[field] = data
 }
 
-func (this *Payload) Sert(field string, data interface{}) *Payload {
-	this.items[field] = data
-	return this
+func (self *Payload) Sert(field string, data interface{}) *Payload {
+	self.items[field] = data
+	return self
 }
 
-func (this *Payload) Get(field string) (interface{}, error) {
-	v, e := this.items[field]
+func (self *Payload) Get(field string) (interface{}, error) {
+	v, e := self.items[field]
 	if e {
 		return v, nil
 	}
@@ -46,18 +46,18 @@ func (this *Payload) Get(field string) (interface{}, error) {
 
 // MAP
 
-func (this *Payload) SetMap(items map[string]interface{}) {
-	this.items = items
+func (self *Payload) SetMap(items map[string]interface{}) {
+	self.items = items
 }
 
-func (this *Payload) GetAsMap() map[string]interface{} {
-	return this.items
+func (self *Payload) GetAsMap() map[string]interface{} {
+	return self.items
 }
 
 // TYPED
 
-func (this *Payload) GetString(field string) (string, error) {
-	v, e := this.Get(field)
+func (self *Payload) GetString(field string) (string, error) {
+	v, e := self.Get(field)
 	if e != nil {
 		return "", e
 
@@ -65,8 +65,8 @@ func (this *Payload) GetString(field string) (string, error) {
 	return v.(string), nil
 }
 
-func (this *Payload) GetFloat(field string) (float64, error) {
-	v, e := this.Get(field)
+func (self *Payload) GetFloat(field string) (float64, error) {
+	v, e := self.Get(field)
 	if e != nil {
 		return 0, e
 
@@ -78,8 +78,8 @@ func (this *Payload) GetFloat(field string) (float64, error) {
 	return r, nil
 }
 
-func (this *Payload) GetInt32(field string) (int32, error) {
-	v, e := this.Get(field)
+func (self *Payload) GetInt32(field string) (int32, error) {
+	v, e := self.Get(field)
 	if e != nil {
 		return 0, e
 
@@ -93,18 +93,18 @@ func (this *Payload) GetInt32(field string) (int32, error) {
 
 // SENDER ID
 
-func (this *Payload) SetSenderId(semderId string) {
-	this.senderId = semderId
+func (self *Payload) SetSenderId(semderId string) {
+	self.senderId = semderId
 }
 
-func (this *Payload) SenderId() string {
-	return this.senderId
+func (self *Payload) SenderId() string {
+	return self.senderId
 }
 
 // JSON
 
-func (this *Payload) UnmarshalJSON(data []byte) error {
-	this.rawjson = data
+func (self *Payload) UnmarshalJSON(data []byte) error {
+	self.rawjson = data
 	items := make(map[string]interface{})
 
 	err := json.Unmarshal(data, &items)
@@ -112,27 +112,27 @@ func (this *Payload) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	this.items = items
+	self.items = items
 	return nil
 }
 
-func (this *Payload) MarshalJSON() ([]byte, error) {
-	return json.Marshal(this.items)
+func (self *Payload) MarshalJSON() ([]byte, error) {
+	return json.Marshal(self.items)
 }
 
-func (this *Payload) Raw() json.RawMessage {
-	return this.rawjson
+func (self *Payload) Raw() json.RawMessage {
+	return self.rawjson
 }
 
 // PULL AND PUT
 // setting to object by pointer from payload data, get
-func (this *Payload) Pull(pointer interface{}) error {
+func (self *Payload) Pull(pointer interface{}) error {
 
-	if this.rawjson == nil {
+	if self.rawjson == nil {
 		return errors.New("Raw JSON doesnt exist")
 	}
 
-	err := json.Unmarshal(this.rawjson, pointer)
+	err := json.Unmarshal(self.rawjson, pointer)
 	if err != nil {
 		return errors.Wrap(err, "Payload.UnmarshallTo")
 	}
@@ -141,14 +141,14 @@ func (this *Payload) Pull(pointer interface{}) error {
 }
 
 // setting data to payload from object by pointer, set
-func (this *Payload) Put(pointer interface{}) error {
+func (self *Payload) Put(pointer interface{}) error {
 
 	rawjson, err := json.Marshal(pointer)
 	if err != nil {
 		return errors.Wrap(err, "Payload.MarshallToRaw")
 	}
 
-	err = this.UnmarshalJSON(rawjson)
+	err = self.UnmarshalJSON(rawjson)
 	if err != nil {
 		return errors.Wrap(err, "Payload.UnmarshalJSON")
 	}

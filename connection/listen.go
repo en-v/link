@@ -8,25 +8,25 @@ import (
 	"github.com/en-v/log"
 )
 
-func (this *Connection) Listen(mode core.LinkMode) {
+func (self *Connection) Listen(mode core.LinkMode) {
 
 	var err error
-	this.enabled = true
+	self.enabled = true
 
 	// keepalive mesaaging initialization
 	if mode == core.CLIENT_MODE {
-		go this.sendKeepAliveMessage()
+		go self.sendKeepAliveMessage()
 	}
 
 	if core.DEBUG {
-		log.Debugw("Connection is listening...", "Mode", "", "RemoteID", this.RemId)
+		log.Debugw("Connection is listening...", "Mode", "", "RemoteID", self.RemId)
 	}
 
-	for this.enabled {
+	for self.enabled {
 
 		msg := message.EmptyV1()
-		err = this.socket.ReadJSON(msg)
-		this.lastact = time.Now()
+		err = self.socket.ReadJSON(msg)
+		self.lastact = time.Now()
 
 		if err != nil {
 			log.Error(err)
@@ -34,38 +34,38 @@ func (this *Connection) Listen(mode core.LinkMode) {
 		}
 
 		if msg.Type == message.REQUEST {
-			go this.handleRequst(msg)
+			go self.handleRequst(msg)
 			continue
 		}
 
 		if msg.Type == message.RESPONSE {
-			go this.handleResponse(msg)
+			go self.handleResponse(msg)
 			continue
 		}
 
 		log.Error("Unknown message direction (not request and not response)", msg.Type)
 	}
 
-	this.Close(false)
+	self.Close(false)
 	if core.DEBUG {
-		log.Debugw("Connection is stoped", "RemoteID", this.RemId, "Error", err, "IsServer", mode == core.GATE_MODE)
+		log.Debugw("Connection is stoped", "RemoteID", self.RemId, "Error", err, "IsServer", mode == core.GATE_MODE)
 	}
 }
 
-func (this *Connection) sendKeepAliveMessage() {
-	if this.enabled {
+func (self *Connection) sendKeepAliveMessage() {
+	if self.enabled {
 
 		time.Sleep(core.KEEPALIVE_INTERVAL)
-		if this.enabled {
+		if self.enabled {
 
-			req := message.Request(this.actor.GetLocalId(), message.ACTION_KEEPALIVE, nil)
-			err := this.SendRequst(req)
+			req := message.Request(self.actor.GetLocalId(), message.ACTION_KEEPALIVE, nil)
+			err := self.SendRequst(req)
 			if err != nil {
 				log.Error(err)
 			}
 
 			if core.DEBUG {
-				log.Debug("Keep alive message", "To", this.RemId)
+				log.Debug("Keep alive message", "To", self.RemId)
 			}
 		}
 	}

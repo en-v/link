@@ -14,8 +14,8 @@ type LocalTargetReflection struct {
 	Type      reflect.Type
 }
 
-func (this *LocalTargetReflection) FindAction(actionName string) (*action.Action, error) {
-	act, exists := this.Actions[actionName]
+func (self *LocalTargetReflection) FindAction(actionName string) (*action.Action, error) {
+	act, exists := self.Actions[actionName]
 	if !exists {
 		return nil, errors.New("Local target action not found, " + actionName)
 	}

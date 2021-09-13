@@ -38,27 +38,27 @@ func New(target types.LinkProxy) (*Link, error) {
 	}, nil
 }
 
-func (this *Link) Shutdown() {
+func (self *Link) Shutdown() {
 
-	this.state.StopFallen <- 1
+	self.state.StopFallen <- 1
 
-	if this.state.Mode == core.GATE_MODE {
-		err := this.httpsrv.Shutdown(context.TODO())
+	if self.state.Mode == core.GATE_MODE {
+		err := self.httpsrv.Shutdown(context.TODO())
 		if err != nil {
 			log.Error(err)
 		}
 	}
 
-	this.state.SetBlancMode()
+	self.state.SetBlancMode()
 }
 
-func (this *Link) SetAlias(alias string) {
-	this.state.Alias = alias
+func (self *Link) SetAlias(alias string) {
+	self.state.Alias = alias
 }
 
-func (this *Link) GetClientToken(remoteId string) (string, error) {
+func (self *Link) GetClientToken(remoteId string) (string, error) {
 
-	c, err := this.state.GetConnection(remoteId)
+	c, err := self.state.GetConnection(remoteId)
 	if err != nil {
 		return "", err
 	}
@@ -69,9 +69,9 @@ func (this *Link) GetClientToken(remoteId string) (string, error) {
 	return string(t), err
 }
 
-func (this *Link) GetClientIP(remoteId string) (*net.TCPAddr, error) {
+func (self *Link) GetClientIP(remoteId string) (*net.TCPAddr, error) {
 
-	c, err := this.state.GetConnection(remoteId)
+	c, err := self.state.GetConnection(remoteId)
 	if err != nil {
 		return nil, err
 	}

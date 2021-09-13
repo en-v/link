@@ -7,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (this *Actor) InvokeOnRemote(remoteId string, actionName string, payload *types.Payload) (*types.Payload, error) {
-	req, conn, err := this.prepareRequstAndConnection(remoteId, actionName, payload)
+func (self *Actor) InvokeOnRemote(remoteId string, actionName string, payload *types.Payload) (*types.Payload, error) {
+	req, conn, err := self.prepareRequstAndConnection(remoteId, actionName, payload)
 	if err != nil {
 		return nil, errors.Wrap(err, "InvokeOnRemote.prepareRequstAndConnection")
 	}
@@ -34,9 +34,9 @@ func (this *Actor) InvokeOnRemote(remoteId string, actionName string, payload *t
 	return resp.Payload, nil
 }
 
-func (this *Actor) prepareRequstAndConnection(remoteId string, actionName string, payload *types.Payload) (*message.MsgV1, *connection.Connection, error) {
+func (self *Actor) prepareRequstAndConnection(remoteId string, actionName string, payload *types.Payload) (*message.MsgV1, *connection.Connection, error) {
 
-	conn, err := this.state.GetConnection(remoteId)
+	conn, err := self.state.GetConnection(remoteId)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "prepareRequstAndConnection.FindConnectionById")
 	}
@@ -45,5 +45,5 @@ func (this *Actor) prepareRequstAndConnection(remoteId string, actionName string
 		return nil, nil, errors.New("Action with current name doesnt exist, " + actionName)
 	}
 
-	return message.Request(this.state.LocalId, actionName, payload), conn, nil
+	return message.Request(self.state.LocalId, actionName, payload), conn, nil
 }

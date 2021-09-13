@@ -7,18 +7,18 @@ import (
 )
 
 // ActOn - call method on remote server
-func (this *Link) Invoke(actionName string, payload *types.Payload) (*types.Payload, error) {
+func (self *Link) Invoke(actionName string, payload *types.Payload) (*types.Payload, error) {
 
-	if this.state.Mode != core.CLIENT_MODE {
+	if self.state.Mode != core.CLIENT_MODE {
 		return nil, errors.New("Link is not in client mode, you need to use ActOnRemote for server mode or Connect before")
 	}
 
-	if this.state.Connections[0] == nil {
+	if self.state.Connections[0] == nil {
 		return nil, errors.New("Remote connection is not found, try to Connect before Act calls")
 	}
-	remoteId := this.state.Connections[0].RemId
+	remoteId := self.state.Connections[0].RemId
 
-	res, err := this.actor.InvokeOnRemote(remoteId, actionName, payload)
+	res, err := self.actor.InvokeOnRemote(remoteId, actionName, payload)
 	if err != nil {
 		return nil, errors.Wrap(err, "Link.ActOnRemote.Act")
 	}
@@ -27,13 +27,13 @@ func (this *Link) Invoke(actionName string, payload *types.Payload) (*types.Payl
 }
 
 // InvokeOn - call method on remote client
-func (this *Link) InvokeOn(callerId string, actionName string, payload *types.Payload) (*types.Payload, error) {
+func (self *Link) InvokeOn(callerId string, actionName string, payload *types.Payload) (*types.Payload, error) {
 
-	if this.state.Mode != core.GATE_MODE {
+	if self.state.Mode != core.GATE_MODE {
 		return nil, errors.New("Link is not in server mode, you need to use Act method")
 	}
 
-	res, err := this.actor.InvokeOnRemote(callerId, actionName, payload)
+	res, err := self.actor.InvokeOnRemote(callerId, actionName, payload)
 	if err != nil {
 		return nil, errors.Wrap(err, "Link.ActOnRemote.ActOnRemote")
 	}
@@ -42,20 +42,20 @@ func (this *Link) InvokeOn(callerId string, actionName string, payload *types.Pa
 }
 
 // InvokeOnCallers - call action on all remote clients
-func (this *Link) Broadcast(actionName string, payload *types.Payload) (map[string]*types.Payload, map[string]error) {
+func (self *Link) Broadcast(actionName string, payload *types.Payload) (map[string]*types.Payload, map[string]error) {
 
 	errs := make(map[string]error)
 
-	if this.state.Mode != core.GATE_MODE {
-		errs[this.state.LocalId] = errors.New("Link is not in server mode, you need to use Act method")
+	if self.state.Mode != core.GATE_MODE {
+		errs[self.state.LocalId] = errors.New("Link is not in server mode, you need to use Act method")
 		return nil, errs
 	}
 
 	results := make(map[string]*types.Payload)
 
-	for _, conn := range this.state.Connections {
+	for _, conn := range self.state.Connections {
 		if conn != nil {
-			res, err := this.actor.InvokeOnRemote(conn.RemId, actionName, payload)
+			res, err := self.actor.InvokeOnRemote(conn.RemId, actionName, payload)
 			if err != nil {
 				errs[conn.RemId] = errors.Wrap(err, "Link.ActOnRemote.ActOnRemote")
 			} else {

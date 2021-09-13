@@ -45,12 +45,12 @@ func New(stt *state.State) (*Actor, error) {
 	}, nil
 }
 
-func (this *Actor) GetLocalActions() []string {
+func (self *Actor) GetLocalActions() []string {
 
-	actions := make([]string, len(this.state.LocalTarget.Actions))
+	actions := make([]string, len(self.state.LocalTarget.Actions))
 	i := 0
 
-	for _, action := range this.state.LocalTarget.Actions {
+	for _, action := range self.state.LocalTarget.Actions {
 		actions[i] = action.Name
 		i++
 	}
@@ -58,15 +58,15 @@ func (this *Actor) GetLocalActions() []string {
 	return actions
 }
 
-func (this *Actor) GetLocalId() string {
-	return this.state.LocalId
+func (self *Actor) GetLocalId() string {
+	return self.state.LocalId
 }
 
-func (this *Actor) DeleteConnection(remoteId string) {
-	for i := range this.state.Connections {
-		if this.state.Connections[i] != nil && this.state.Connections[i].RemId == remoteId {
-			this.state.Connections[i] = nil
-			this.state.ClientsUnregFunc(remoteId)
+func (self *Actor) DeleteConnection(remoteId string) {
+	for i := range self.state.Connections {
+		if self.state.Connections[i] != nil && self.state.Connections[i].RemId == remoteId {
+			self.state.Connections[i] = nil
+			self.state.ClientsUnregFunc(remoteId)
 			if core.DEBUG {
 				log.Debug("Connection was deleted on server side")
 			}

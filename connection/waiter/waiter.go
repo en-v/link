@@ -21,10 +21,10 @@ func New(id string) *Waiter {
 	}
 }
 
-func (this *Waiter) Drop() {
-	close(this.Channel)
+func (self *Waiter) Drop() {
+	close(self.Channel)
 }
 
-func (this *Waiter) IsExpired() bool {
-	return time.Since(this.Created) > core.RESPONSE_WAITING_EXPIRE_INTERVAL
+func (self *Waiter) IsExpired() bool {
+	return time.Since(self.Created) > core.RESPONSE_WAITING_EXPIRE_INTERVAL
 }

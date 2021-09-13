@@ -22,19 +22,19 @@ func Pl() Payload {
 	return Payload{}
 }
 
-func (this Payload) Set(field string, data interface{}) Payload {
-	this[field] = data
-	return this
+func (self Payload) Set(field string, data interface{}) Payload {
+	self[field] = data
+	return self
 }
 
 const LINK_REM_ID_PROP_NAME = "$#6@8*%*8@6#$"
 
-func (this Payload) SetRemoteId(remId string) {
-	this[LINK_REM_ID_PROP_NAME] = remId
+func (self Payload) SetRemoteId(remId string) {
+	self[LINK_REM_ID_PROP_NAME] = remId
 }
 
-func (this Payload) GetRemoteId() string {
-	remId, ok := this[LINK_REM_ID_PROP_NAME]
+func (self Payload) GetRemoteId() string {
+	remId, ok := self[LINK_REM_ID_PROP_NAME]
 	if ok {
 		return remId.(string)
 	}

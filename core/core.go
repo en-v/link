@@ -20,8 +20,8 @@ const ZOOMBIE_HUNTER_INERVAL = KEEPALIVE_INTERVAL * 3
 
 var DEBUG = false
 
-func (this LinkMode) ToString() string {
-	switch this {
+func (self LinkMode) ToString() string {
+	switch self {
 	case GATE_MODE:
 		return "GATE"
 

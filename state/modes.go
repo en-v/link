@@ -5,25 +5,25 @@ import (
 	"github.com/en-v/link/core"
 )
 
-func (this *State) SetBlancMode() {
+func (self *State) SetBlancMode() {
 
-	for i := range this.Connections {
-		if this.Connections[i] != nil {
-			this.Connections[i].Close(true)
-			this.Connections[i] = nil
+	for i := range self.Connections {
+		if self.Connections[i] != nil {
+			self.Connections[i].Close(true)
+			self.Connections[i] = nil
 		}
 	}
 
-	this.Connections = nil
-	this.Mode = core.BLANK_MODE
+	self.Connections = nil
+	self.Mode = core.BLANK_MODE
 }
 
-func (this *State) SetGateMode() {
-	this.Mode = core.GATE_MODE
-	this.Connections = make([]*connection.Connection, core.MAX_CONNECTIONS_PER_GATE_COUNT)
+func (self *State) SetGateMode() {
+	self.Mode = core.GATE_MODE
+	self.Connections = make([]*connection.Connection, core.MAX_CONNECTIONS_PER_GATE_COUNT)
 }
 
-func (this *State) SetClientMode() {
-	this.Mode = core.CLIENT_MODE
-	this.Connections = make([]*connection.Connection, 1)
+func (self *State) SetClientMode() {
+	self.Mode = core.CLIENT_MODE
+	self.Connections = make([]*connection.Connection, 1)
 }

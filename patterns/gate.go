@@ -21,23 +21,23 @@ func NewGateTarget() (*GateTarget, error) {
 	return gateTarget, nil
 }
 
-func (this *GateTarget) GetLinkHandlers() *types.Handlers {
+func (self *GateTarget) GetLinkHandlers() *types.Handlers {
 	return &types.Handlers{
-		ID:    this.id,
-		Auth:  this.AuthCaller,
-		Reg:   this.RegCaller,
-		Unreg: this.UnregCaller,
+		ID:    self.id,
+		Auth:  self.AuthCaller,
+		Reg:   self.RegCaller,
+		Unreg: self.UnregCaller,
 	}
 }
 
-func (this *GateTarget) RegCaller(callerId string) error {
+func (self *GateTarget) RegCaller(callerId string) error {
 	return nil
 }
 
-func (this *GateTarget) UnregCaller(callerId string) error {
+func (self *GateTarget) UnregCaller(callerId string) error {
 	return nil
 }
 
-func (this *GateTarget) AuthCaller(callerId string, token string) error {
+func (self *GateTarget) AuthCaller(callerId string, token string) error {
 	return nil
 }

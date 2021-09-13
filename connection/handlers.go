@@ -7,14 +7,14 @@ import (
 	"github.com/en-v/log"
 )
 
-func (this *Connection) handleRequst(req *message.MsgV1) {
+func (self *Connection) handleRequst(req *message.MsgV1) {
 
 	if req.Payload == nil {
 		req.Payload = types.Newp()
 	}
 	req.Payload.SetSenderId(req.SenderId)
 
-	if this.handleServiceRequst(req) {
+	if self.handleServiceRequst(req) {
 		return
 	}
 
@@ -22,37 +22,37 @@ func (this *Connection) handleRequst(req *message.MsgV1) {
 		log.Debugw("Request handler", "Req", req.ToJson())
 	}
 
-	res, err := this.actor.InvokeIncomingAction(req)
+	res, err := self.actor.InvokeIncomingAction(req)
 	if err != nil {
-		errmsg := req.ToError(this.actor.GetLocalId(), err)
-		err = this.SendResponse(errmsg)
+		errmsg := req.ToError(self.actor.GetLocalId(), err)
+		err = self.SendResponse(errmsg)
 		if err != nil {
 			log.Error(err)
 		}
 		return
 	}
 
-	resp := req.ToResponse(this.actor.GetLocalId(), res)
-	err = this.SendResponse(resp)
+	resp := req.ToResponse(self.actor.GetLocalId(), res)
+	err = self.SendResponse(resp)
 	if err != nil {
 		log.Error(err)
 	}
 }
 
-func (this *Connection) handleServiceRequst(req *message.MsgV1) bool {
+func (self *Connection) handleServiceRequst(req *message.MsgV1) bool {
 
 	switch req.Action {
 
 	case message.ACTION_KEEPALIVE:
 		if core.DEBUG {
-			log.Debug("Keep alive message", "From", req.SenderId, "LastAct", this.lastact)
+			log.Debug("Keep alive message", "From", req.SenderId, "LastAct", self.lastact)
 		}
-		go this.sendKeepAliveMessage()
+		go self.sendKeepAliveMessage()
 		return true
 
 	case message.ACTION_CLOSE_CONNECTION:
-		this.Close(false)
-		this.actor.DeleteConnection(req.SenderId)
+		self.Close(false)
+		self.actor.DeleteConnection(req.SenderId)
 		if core.DEBUG {
 			log.Debug("Connection was closed on remote side")
 		}
@@ -63,9 +63,9 @@ func (this *Connection) handleServiceRequst(req *message.MsgV1) bool {
 	}
 }
 
-func (this *Connection) handleResponse(resp *message.MsgV1) {
+func (self *Connection) handleResponse(resp *message.MsgV1) {
 
-	rrw, err := this.GetWaiter(resp.MsgId)
+	rrw, err := self.GetWaiter(resp.MsgId)
 	if err != nil {
 		log.Error(err)
 		return
@@ -76,5 +76,5 @@ func (this *Connection) handleResponse(resp *message.MsgV1) {
 	}
 
 	rrw.Channel <- resp
-	this.DropWaiter(resp.MsgId)
+	self.DropWaiter(resp.MsgId)
 }

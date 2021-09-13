@@ -62,25 +62,25 @@ func New(socket *websocket.Conn, handShakeMessage *message.MsgV1, iactor iactor.
 	return conn, nil
 }
 
-func (this *Connection) Close(sendRequest bool) {
+func (self *Connection) Close(sendRequest bool) {
 
 	if sendRequest {
-		req := message.Request(this.actor.GetLocalId(), message.ACTION_CLOSE_CONNECTION, nil)
-		err := this.SendRequst(req)
+		req := message.Request(self.actor.GetLocalId(), message.ACTION_CLOSE_CONNECTION, nil)
+		err := self.SendRequst(req)
 		if err != nil {
 			log.Error(err)
 		}
 	}
 
-	this.enabled = false
-	this.socket.Close()
+	self.enabled = false
+	self.socket.Close()
 }
 
-func (this *Connection) IsActive() bool {
-	return time.Since(this.lastact) <= core.KEEPALIVE_INTERVAL*4
+func (self *Connection) IsActive() bool {
+	return time.Since(self.lastact) <= core.KEEPALIVE_INTERVAL*4
 }
 
-func (this *Connection) applyRemoteActions(payload *types.Payload) error {
+func (self *Connection) applyRemoteActions(payload *types.Payload) error {
 	data, err := payload.Get(message.HANDSHAKE_ACTIONS)
 	if err != nil {
 		return errors.New("Actions field is not an array")
@@ -91,18 +91,18 @@ func (this *Connection) applyRemoteActions(payload *types.Payload) error {
 		return errors.New("Actions field casting error")
 	}
 
-	this.remActions = make([]string, len(actions))
+	self.remActions = make([]string, len(actions))
 	for a := range actions {
-		this.remActions[a] = actions[a].(string)
+		self.remActions[a] = actions[a].(string)
 	}
 	if core.DEBUG {
-		log.Debugw("Remote Actions", "Actions", this.remActions)
+		log.Debugw("Remote Actions", "Actions", self.remActions)
 	}
 	return nil
 }
 
-func (this *Connection) RemoteActionExists(action string) bool {
-	for _, rem := range this.remActions {
+func (self *Connection) RemoteActionExists(action string) bool {
+	for _, rem := range self.remActions {
 		if rem == action {
 			return true
 		}
@@ -110,10 +110,10 @@ func (this *Connection) RemoteActionExists(action string) bool {
 	return false
 }
 
-func (this *Connection) Enable() {
-	this.enabled = true
+func (self *Connection) Enable() {
+	self.enabled = true
 }
 
-func (this *Connection) Disable() {
-	this.enabled = false
+func (self *Connection) Disable() {
+	self.enabled = false
 }

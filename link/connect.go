@@ -9,14 +9,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (this *Link) Reconnect(gateUrl string, token string) error {
-	this.Shutdown()
-	return this.Connect(gateUrl, token)
+func (self *Link) Reconnect(gateUrl string, token string) error {
+	self.Shutdown()
+	return self.Connect(gateUrl, token)
 }
 
-func (this *Link) Connect(gateUrl string, token string) error {
+func (self *Link) Connect(gateUrl string, token string) error {
 
-	err := this.verifyLinkAsCaller()
+	err := self.verifyLinkAsCaller()
 	if err != nil {
 		return errors.Wrap(err, "Connect.VerifyLinkAsClient")
 	}
@@ -28,18 +28,18 @@ func (this *Link) Connect(gateUrl string, token string) error {
 		return errors.Wrap(err, "Connect.WebScoektDial")
 	}
 
-	this.state.CallerToken = token
-	conn, err := this.handshakeWithGate(socket)
+	self.state.CallerToken = token
+	conn, err := self.handshakeWithGate(socket)
 	if err != nil {
 		return errors.Wrap(err, "Connect.HandShakeToServer")
 	}
 
-	this.state.SetClientMode()
-	this.state.Connections[0] = conn
-	go this.state.Connections[0].Listen(core.CLIENT_MODE)
+	self.state.SetClientMode()
+	self.state.Connections[0] = conn
+	go self.state.Connections[0].Listen(core.CLIENT_MODE)
 
 	if core.DEBUG {
-		log.Debugw("Link as a client is connectedto", "Alias", this.state.Alias, "URL", gateUrl)
+		log.Debugw("Link as a client is connectedto", "Alias", self.state.Alias, "URL", gateUrl)
 	}
 
 	return nil

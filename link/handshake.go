@@ -13,13 +13,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func (this *Link) handshakeWithGate(socket *websocket.Conn) (*connection.Connection, error) {
+func (self *Link) handshakeWithGate(socket *websocket.Conn) (*connection.Connection, error) {
 
 	payload := types.Newp()
-	payload.Set(message.HANDSHAKE_ACTIONS, this.actor.GetLocalActions())
-	payload.Set(message.HANDSHAKE_TOKEN, this.state.CallerToken)
+	payload.Set(message.HANDSHAKE_ACTIONS, self.actor.GetLocalActions())
+	payload.Set(message.HANDSHAKE_TOKEN, self.state.CallerToken)
 
-	requestToGate := message.Request(this.state.LocalId, message.ACTION_HANDSHAKE, payload)
+	requestToGate := message.Request(self.state.LocalId, message.ACTION_HANDSHAKE, payload)
 
 	err := socket.WriteJSON(requestToGate)
 	if err != nil {
@@ -37,7 +37,7 @@ func (this *Link) handshakeWithGate(socket *websocket.Conn) (*connection.Connect
 		return nil, errors.Wrap(err, "handshakeWithGate.VerifyHandshakeResponse")
 	}
 
-	conn, err := connection.New(socket, responseFromGate, this.actor)
+	conn, err := connection.New(socket, responseFromGate, self.actor)
 	if err != nil {
 		return nil, errors.Wrap(err, "handshakeWithGate.ConnectionNew")
 	}
@@ -49,7 +49,7 @@ func (this *Link) handshakeWithGate(socket *websocket.Conn) (*connection.Connect
 	return conn, nil
 }
 
-func (this *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Connection, error) {
+func (self *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Connection, error) {
 
 	requestFromCaller := message.EmptyV1()
 	_, data, err := socket.ReadMessage()
@@ -72,12 +72,12 @@ func (this *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Conne
 	}
 
 	token := ""
-	if this.state.ClientsAuthFunc != nil {
+	if self.state.ClientsAuthFunc != nil {
 		token, err = requestFromCaller.Payload.GetString("token")
 		if err != nil {
 			return nil, errors.Wrap(err, "handshakeFromCaller.Get.Token")
 		}
-		err = this.state.ClientsAuthFunc(requestFromCaller.SenderId, token)
+		err = self.state.ClientsAuthFunc(requestFromCaller.SenderId, token)
 		if err != nil {
 			return nil, errors.New("Acees denied, the token is wrong, " + err.Error())
 		}
@@ -86,15 +86,15 @@ func (this *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Conne
 	//
 
 	payload := types.Newp()
-	payload.Set(message.HANDSHAKE_ACTIONS, this.actor.GetLocalActions())
-	responseToCaller := requestFromCaller.ToResponse(this.state.LocalId, payload)
+	payload.Set(message.HANDSHAKE_ACTIONS, self.actor.GetLocalActions())
+	responseToCaller := requestFromCaller.ToResponse(self.state.LocalId, payload)
 
 	err = socket.WriteJSON(responseToCaller)
 	if err != nil {
 		return nil, err
 	}
 
-	conn, err := connection.New(socket, requestFromCaller, this.actor)
+	conn, err := connection.New(socket, requestFromCaller, self.actor)
 	conn.Token = token
 	if err != nil {
 		return nil, err
