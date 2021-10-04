@@ -19,6 +19,7 @@
 /_obj
 /cam
 /ssl
+/example/logs
 
 *.265
 *.264

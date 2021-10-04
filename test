@@ -1,0 +1,9 @@
+echo "THE KORN - TEST"
+echo " "
+
+cd ./example
+go run example.go
+cd ..
+
+echo ''
+echo 'TEST DONE'

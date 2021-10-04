@@ -3,11 +3,13 @@ package main
 import (
 	"time"
 
-	link "github.com/en-v/link"
-	"github.com/en-v/link/test/targets"
+	"github.com/en-v/link"
+	"github.com/en-v/link/example/targets"
+	"github.com/en-v/log"
 )
 
 func main() {
+	log.Init(log.GREEN, "LINK")
 
 	link.DebugOn()
 	targets.TestServer()

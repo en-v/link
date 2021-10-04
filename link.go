@@ -6,9 +6,8 @@ import (
 	"github.com/en-v/link/core"
 	"github.com/en-v/link/link"
 	"github.com/en-v/link/types"
+	"github.com/pkg/errors"
 )
-
-/* LINK */
 
 type Link interface {
 	// For all modes
@@ -32,14 +31,28 @@ type Link interface {
 	Kickout(clientId string) error
 }
 
-//Payload - create new types.Payload object.
-//It needs as parameters for Invoke and InvokeOn methods.
+//Payload - create a new types.Payload object.
+//It is needed as parameters for Invoke and InvokeOn methods.
 func Payload() *types.Payload {
 	return types.Newp()
 }
 
-//New - create new Link instance.
-//linkProxy - linked object which methods the Link will provide
+//Results - create a complete Payload with one named field of data
+func Results(field string, data interface{}) *types.Payload {
+	return types.Newp().Sert(field, data)
+}
+
+//Result - create a complete Payload with data as payload
+func Result(data interface{}) (*types.Payload, error) {
+	res := types.Newp()
+	err := res.Put(data)
+	if err != nil {
+		return nil, errors.Wrap(err, "Result")
+	}
+	return res, nil
+}
+
+//New - create a new Link instance, linkProxy is linked object which methods the Link will provide
 func New(linkProxy types.LinkProxy) (Link, error) {
 	return link.New(linkProxy)
 }

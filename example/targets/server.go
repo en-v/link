@@ -68,10 +68,8 @@ func (s *Server) AuthClient(ClientId string, Token string) error {
 }
 
 func (s *Server) ServerMethod(params *types.Payload) (*types.Payload, error) {
-	res := link.Payload()
-	res.Set("mirrored_params", params)
 	log.Debug("Server method", "Params", params)
-	return res, nil
+	return link.Results("mirrored_params", params), nil
 }
 
 func (s *Server) RegisterClient(remoteId string) error {
