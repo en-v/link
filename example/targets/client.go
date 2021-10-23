@@ -60,12 +60,12 @@ type Client struct {
 	ID goid.BBID
 }
 
-func (s *Client) GetLinkHandlers() *types.Handlers {
-	return &types.Handlers{
-		ID:    s.ID.String(),
-		Auth:  nil,
-		Reg:   nil,
-		Unreg: nil,
+func (s *Client) Hooks() *types.Hooks {
+	return &types.Hooks{
+		LocalId:  s.ID.String,
+		Verify:   nil,
+		CheckIn:  nil,
+		CheckOut: nil,
 	}
 }
 

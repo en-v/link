@@ -15,7 +15,7 @@ func TestServer() {
 
 	s := &Server{
 		Clients: make(map[string]string),
-		ID:      goid.New(),
+		Id:      goid.New(),
 	}
 
 	link, err := link.New(s)
@@ -47,16 +47,16 @@ func TestServer() {
 
 type Server struct {
 	Clients map[string]string
-	ID      goid.BBID
+	Id      goid.BBID
 	mu      sync.Mutex
 }
 
-func (s *Server) GetLinkHandlers() *types.Handlers {
-	return &types.Handlers{
-		ID:    s.ID.String(),
-		Auth:  s.AuthClient,
-		Reg:   s.RegisterClient,
-		Unreg: s.UnregisterClient,
+func (s *Server) Hooks() *types.Hooks {
+	return &types.Hooks{
+		LocalId:  s.Id.String,
+		Verify:   s.AuthClient,
+		CheckIn:  s.RegisterClient,
+		CheckOut: s.UnregisterClient,
 	}
 }
 

@@ -53,7 +53,7 @@ func Result(data interface{}) (*types.Payload, error) {
 }
 
 //New - create a new Link instance, linkProxy is linked object which methods the Link will provide
-func New(linkProxy types.LinkProxy) (Link, error) {
+func New(linkProxy types.Handler) (Link, error) {
 	return link.New(linkProxy)
 }
 

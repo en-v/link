@@ -72,12 +72,12 @@ func (self *Link) handshakeFromCaller(socket *websocket.Conn) (*connection.Conne
 	}
 
 	token := ""
-	if self.state.ClientsAuthFunc != nil {
+	if self.state.Vefify != nil {
 		token, err = requestFromCaller.Payload.GetString("token")
 		if err != nil {
 			return nil, errors.Wrap(err, "handshakeFromCaller.Get.Token")
 		}
-		err = self.state.ClientsAuthFunc(requestFromCaller.SenderId, token)
+		err = self.state.Vefify(requestFromCaller.SenderId, token)
 		if err != nil {
 			return nil, errors.New("Acees denied, the token is wrong, " + err.Error())
 		}

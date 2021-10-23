@@ -21,8 +21,8 @@ func NewCallerTraget() (*CallerTarget, error) {
 	return callerTarget, nil
 }
 
-func (self *CallerTarget) GetLinkHandlers() *types.Handlers {
-	return &types.Handlers{
-		ID: self.id,
+func (self *CallerTarget) GetLinkHandlers() *types.Hooks {
+	return &types.Hooks{
+		LocalId: self.id,
 	}
 }

@@ -20,7 +20,7 @@ type Link struct {
 	upgrader websocket.Upgrader
 }
 
-func New(target types.LinkProxy) (*Link, error) {
+func New(target types.Handler) (*Link, error) {
 
 	stt, err := state.New(target)
 	if err != nil {

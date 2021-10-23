@@ -21,12 +21,12 @@ func NewGateTarget() (*GateTarget, error) {
 	return gateTarget, nil
 }
 
-func (self *GateTarget) GetLinkHandlers() *types.Handlers {
-	return &types.Handlers{
-		ID:    self.id,
-		Auth:  self.AuthCaller,
-		Reg:   self.RegCaller,
-		Unreg: self.UnregCaller,
+func (self *GateTarget) GetLinkHandlers() *types.Hooks {
+	return &types.Hooks{
+		LocalId:    self.id,
+		Verify:  self.AuthCaller,
+		CheckIn:   self.RegCaller,
+		CheckOut: self.UnregCaller,
 	}
 }
 

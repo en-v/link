@@ -129,8 +129,8 @@ func (self *Link) handleIncomingConnectionFromClients(w http.ResponseWriter, r *
 	conn.Enable()
 	go conn.Listen(core.GATE_MODE)
 
-	if self.state.ClientsRegFunc != nil {
-		err = self.state.ClientsRegFunc(conn.RemId)
+	if self.state.CheckIn != nil {
+		err = self.state.CheckIn(conn.RemId)
 		if err != nil {
 			err = errors.Wrap(err, "Client register extenal method returned error")
 			log.Error(err)
