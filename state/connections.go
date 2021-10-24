@@ -66,7 +66,10 @@ func (self *State) CloseClientConnection(remoteId string) error {
 func (self *State) dropConnection(num int, c *connection.Connection) {
 	c.Close(false)
 	if self.CheckOut != nil {
-		self.CheckOut(c.RemId)
+		err := self.CheckOut(c.RemId)
+		if err != nil {
+			panic(err)
+		}
 	}
 	self.Connections[num] = nil
 }
