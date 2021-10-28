@@ -6,38 +6,42 @@ import (
 	"github.com/pkg/errors"
 )
 
-type GateTarget struct {
-	id   string
-	link link.Link
+type Gate struct {
+	Id   string
+	Link link.Link
 }
 
-func NewGateTarget() (*GateTarget, error) {
-	gateTarget := &GateTarget{}
-	gateLink, err := link.New(gateTarget)
+func (g *Gate) GetId() string {
+	return g.Id
+}
+
+func MakeGate() (*Gate, error) {
+	gate := &Gate{}
+	Link, err := link.New(gate)
 	if err != nil {
-		return nil, errors.Wrap(err, "NodesGate.New.NewLink")
+		return nil, errors.Wrap(err, "Make Gate")
 	}
-	gateTarget.link = gateLink
-	return gateTarget, nil
+	gate.Link = Link
+	return gate, nil
 }
 
-func (self *GateTarget) GetLinkHandlers() *types.Hooks {
+func (g *Gate) Hooks() *types.Hooks {
 	return &types.Hooks{
-		LocalId:    self.id,
-		Verify:  self.AuthCaller,
-		CheckIn:   self.RegCaller,
-		CheckOut: self.UnregCaller,
+		LocalId:  g.GetId,
+		Verify:   g.Verify,
+		CheckIn:  g.CheckIn,
+		CheckOut: g.CheckOut,
 	}
 }
 
-func (self *GateTarget) RegCaller(callerId string) error {
+func (g *Gate) CheckIn(remid string) error {
 	return nil
 }
 
-func (self *GateTarget) UnregCaller(callerId string) error {
+func (g *Gate) CheckOut(remid string) error {
 	return nil
 }
 
-func (self *GateTarget) AuthCaller(callerId string, token string) error {
+func (g *Gate) Verify(remid, token string) error {
 	return nil
 }
